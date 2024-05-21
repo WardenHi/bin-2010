@@ -1,0 +1,131 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uprak</title>
+    <link rel="stylesheet" href="assets/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <div id="app">
+        <div class="invoice">
+          <div class="invoice-header">
+            <h1>WoW Shop</h1>
+            <input type="text" placeholder="No. Nota" v-model="invoiceNumber">
+            <input type="text" placeholder="Pelanggan" v-model="customerName">
+            <input type="date" v-model="date">
+            <div class="total-payment">Total Pembayaran: Rp. {{ formatCurrency(totalPayment) }}</div>
+          </div>
+          <div class="invoice-body">
+            <div>
+            <label>Kode Barang: </label>
+              <select v-model="selectedItem">
+                <option v-for="item in items" :value="item">{{ item.name }}</option>
+              </select>
+              <label>Quantity: </label>
+              <input type="number" v-model="quantity" placeholder="Quantity">
+              <button @click="addItem" class="btn">Tambah</button>
+            </div><br>
+</head>
+<body>
+    <table border="1">
+        <thead>
+          <tr>
+            <th>ID Barang</th>
+            <th>Nama Barang</th>
+            <th>Harga Satuan</th>
+            <th>Qty</th>
+            <th>Jumlah</th>
+            <th>Opsi</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(item, index) in selectedItems" :key="index">
+            <td>{{ item.id }}</td>
+            <td>{{ item.name }}</td>
+            <td>{{ formatCurrency(item.price) }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>{{ formatCurrency(item.price * item.quantity) }}</td>
+            <td><button @click="removeItem(index)" class="btn btn-danger">Hapus</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="invoice-footer">
+      <div>
+        <label>Sub Total</label><input type="text" placeholder="Sub Total" :value="formatCurrency(subTotal)" readonly>
+        <label>Diskon</label><input type="text" placeholder="Diskon (%)" v-model.number="discount">
+        <label>Total Harga</label><input type="text" placeholder="Total Harga" :value="formatCurrency(totalPayment)" readonly>
+      </div>
+      <div>
+        <label>Bayar</label><input type="text" placeholder="Bayar" v-model.number="payment">
+        <label>Kembalian</label><input type="text" placeholder="Kembalian" :value="formatCurrency(change)" readonly>
+      </div>
+      <button class="btn" @click="completeTransaction">Selesai</button>
+    </div>
+  </div>
+</div>
+
+<script>
+    new Vue({
+    el: '#app',
+    data: {
+      invoiceNumber: '',
+      customerName: '',
+      date: '',
+      selectedItem: null,
+      quantity: 1,
+      items: [
+        { id: '001', name: 'Excalibur', price: 50000 },
+        { id: '002', name: 'Greataxe', price: 75000 },
+        { id: '003', name: 'Huntsman Bow', price: 100000 }
+      ],
+      selectedItems: [],
+      discount: 0,
+      payment: 0
+    },
+    computed: {
+      subTotal() {
+        return this.selectedItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      },
+      totalPayment() {
+        return this.subTotal - (this.subTotal * (this.discount / 100));
+      },
+      change() {
+        return this.payment - this.totalPayment;
+      }
+    },
+    methods: {
+      addItem() {
+        if (this.selectedItem && this.quantity > 0) {
+          const itemIndex = this.selectedItems.findIndex(item => item.id === this.selectedItem.id);
+          if (itemIndex !== -1) {
+            this.selectedItems[itemIndex].quantity += this.quantity;
+          } else {
+            this.selectedItems.push({ ...this.selectedItem, quantity: this.quantity });
+          }
+          this.quantity = 1;
+        }
+      },
+      removeItem(index) {
+        this.selectedItems.splice(index, 1);
+      },
+      formatCurrency(value) {
+        return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(value);
+      },
+      completeTransaction() {
+        alert('Transaksi selesai!');
+        this.resetForm();
+      },
+      resetForm() {
+        this.invoiceNumber = '';
+        this.customerName = '';
+        this.date = '';
+        this.selectedItem = null;
+        this.selectedItems = [];
+        this.discount = '';
+        this.payment = '';
+      }
+    }
+  });
+</script>
+</body>
+</html>

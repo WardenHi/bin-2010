@@ -1,0 +1,38 @@
+.invoice {
+    width: 80%;
+    margin: auto;
+    border: 1px solid #ccc;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  .invoice-header, .invoice-body, .invoice-footer {
+    margin-bottom: 20px;
+  }
+  .invoice-header input, .invoice-footer input {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+  }
+  .invoice-body table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .invoice-body table, .invoice-body th, .invoice-body td {
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: left;
+  }
+  .total-payment {
+    color: red;
+    font-size: 1.5em;
+  }
+  .btn {
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  .btn-danger {
+    background-color: red;
+  }
